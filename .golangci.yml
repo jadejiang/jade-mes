@@ -1,0 +1,47 @@
+linters:
+  disable-all: true # 关闭其他linter
+  enable: # 下面是开启的linter列表，之后的英文注释介绍了相应linter的功能
+    - deadcode # Finds unused code
+    - errcheck      # Errcheck is a program for checking for unchecked errors in go programs. These unchecked errors can be critical bugs in some cases
+    # - gosimple # Linter for Go source code that specializes in simplifying a code
+    # - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
+    - ineffassign # Detects when assignments to existing variables are not used
+    # - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
+    # - structcheck # Finds unused struct fields
+    # - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
+    # - unused # Checks Go code for unused constants, variables, functions and types
+    # - varcheck # Finds unused global variables and constants
+    # - scopelint # Scopelint checks for unpinned variables in go programs
+    # - golint        # Carry out the stylistic conventions put forth in Effective Go and CodeReviewComments
+
+linters-settings:
+  govet: # 对于linter govet，我们手动开启了它的某些扫描规则
+    check-shadowing: true
+    check-unreachable: true
+    check-rangeloops: true
+    check-copylocks: true
+run:
+  # Which dirs to skip: issues from them won't be reported.
+  # Can use regexp here: `generated.*`, regexp is applied on full path.
+  # Default value is empty list,
+  # but default dirs are skipped independently of this option's value (see skip-dirs-use-default).
+  # "/" will be replaced by current OS file path separator to properly work on Windows.
+  skip-dirs:
+    - vendor
+  # The default concurrency value is the number of available CPU.
+  concurrency: 4
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
+  timeout: 60m
+  modules-download-mode: vendor
+# output configuration options
+output:
+  # Format: colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
+  #
+  # Multiple can be specified by separating them by comma, output can be provided
+  # for each of them by separating format name and path by colon symbol.
+  # Output path can be either `stdout`, `stderr` or path to the file to write to.
+  # Example: "checkstyle:report.json,colored-line-number"
+  #
+  # Default: colored-line-number
+  format: junit-xml:golangci-lint.xml

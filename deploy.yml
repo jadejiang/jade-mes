@@ -1,0 +1,24 @@
+- hosts: all
+  gather_facts: no
+  remote_user: root
+
+  tasks:
+  - name : copy pm2.yml
+    copy: 
+      src:  pm2.yml
+      dest: /mnt/pm2-projects/jade-mes/
+
+  - name : copy config file
+    copy: 
+      src:  tmp.config.yml
+      dest: /mnt/pm2-projects/jade-mes/config.yml
+
+  - name : copy jade-mes
+    copy: 
+      src:  jade-mes
+      dest: /mnt/pm2-projects/jade-mes/
+      mode: 0755
+
+  - name : restart jade-mes
+    shell: cd /mnt/pm2-projects/jade-mes/ && pm2 restart pm2.yml
+    ignore_errors: true

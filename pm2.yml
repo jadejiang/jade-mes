@@ -1,0 +1,6 @@
+apps:
+- name: jade-mes
+  instances: 1
+  exec_mode: fork
+  script: ./jade-mes
+  exec_interpreter : none

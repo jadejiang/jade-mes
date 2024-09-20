@@ -1,0 +1,65 @@
+debug: true
+sqlDebug: true
+ginDebug: true
+reqDebug: true
+release_mode: true
+
+server:
+  port: :1001
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: 123456
+  dbname: mes
+  max_idle_connections: 5
+  max_open_connections: 10
+redis:
+  default:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    dbs:
+      default: 11
+      dataReport: 1
+consul:
+  enable: true
+  serviceName: "jade-mes"
+  tags:
+    - "urlprefix-/jade-mes"
+mongodb:
+  host: 172.17.0.1
+  port: 27017
+  user:
+  password:
+  dbname: cxer
+  url: "mongodb://:@172.17.0.1:27017"
+
+log:
+  enableConsole: true
+  consoleLevel: "debug"
+  consoleJson: true
+  enableFile: true
+  fileLevel: "debug"
+  fileJson: true
+  fileLocation: "./logs/server.log"
+  accessLocation: "./logs/access.log"
+  
+rabbitmq:
+  hostName: 127.0.0.1
+  port: 5672
+  userName: guest
+  password: guest
+  exchangeName: jade-mes
+  exchangeType: topic
+  prefetch: 100
+  prefetchForDataReport: 100
+  queueRoutings:
+    - mes.planStatus.update:
+      - mesPlanStatusUpdate
+
+influxdb:
+  host: 127.0.0.1
+  port: 8089
+
+environment: "staging"

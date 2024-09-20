@@ -1,0 +1,73 @@
+stages:
+  - deploy
+  - lint
+
+golangci-lint:
+  image: golangci/golangci-lint:v1.44.2
+  stage: lint
+  allow_failure: false
+  tags:
+    - docker
+  script:
+    - go env -w GOPROXY="https://goproxy.io,direct"
+    - golangci-lint run
+  artifacts:
+    when: always
+    reports:
+      junit: golangci-lint.xml
+  variables:
+    GOCACHE: ${CI_PROJECT_DIR}/ci/cache/go
+    GOLANGCI_LINT_CACHE: ${CI_PROJECT_DIR}/ci/cache/linter
+  cache:
+    key: lintercache
+    paths:
+      - ci/cache/go
+      - ci/cache/linter
+  except:
+    - develop
+    - master
+    - release
+
+deploy2develop:
+  stage: deploy
+  script:
+    - gvm use 1.21
+    - GO111MODULE=on go build -mod=vendor
+    - cp staging.config.yml tmp.config.yml
+    - ansible-playbook -i staginghosts  deploy.yml
+  only:
+    - develop
+
+deploy2staging:
+  stage: deploy
+  script:
+    - gvm use 1.21
+    - GO111MODULE=on go build -mod=vendor
+    - cp staging.config.yml tmp.config.yml
+    - ansible-playbook -i staginghosts  deploy.yml
+  only:
+    - master
+
+deploy2production:
+  stage: deploy
+  tags:
+    - prod
+  script:
+    - gvm use 1.21
+    - GO111MODULE=on go build -mod=vendor
+    - cp production.config.yml tmp.config.yml
+    - ansible-playbook -i productionhosts deploy.yml
+  only:
+    - release
+
+deploy2production-tags:
+  stage: deploy
+  tags:
+    - prod
+  script:
+    - gvm use 1.21
+    - GO111MODULE=on go build -mod=vendor
+    - cp production.config.yml tmp.config.yml
+    - ansible-playbook -i productionhosts deploy.yml
+  only:
+    - web
